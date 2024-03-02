@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSettings>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -13,14 +14,21 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    private:
+        // static inline QPixmap capturePixmap;
+        //
+        void updateCapture();
 
-private slots:
-    void on_pushButton_clicked();
 
-private:
-    Ui::MainWindow *ui;
+    public:
+        MainWindow(QWidget *parent = nullptr);
+        ~MainWindow();
+
+    private slots:
+
+        void on_snapButton_clicked();
+
+    private:
+        Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H
