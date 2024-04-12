@@ -15,17 +15,17 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
     private:
-        // static inline QPixmap capturePixmap;
+        QPixmap capturePixmap;
         //
         void updateCapture();
 
 
     public:
         MainWindow(QWidget *parent = nullptr);
+        void resizeEvent(QResizeEvent *event);
         ~MainWindow();
 
     private slots:
-
         void on_snapButton_clicked();
 
     private:

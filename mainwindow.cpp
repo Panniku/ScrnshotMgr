@@ -1,10 +1,13 @@
 #include <QDebug>
+#include <QPainter>
 #include <QStandardPaths>
 #include <QTimer>
 #include <snapper/snapper.h>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "logcat/logcat.h"
+
+QPixmap *mCapture;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -35,25 +38,53 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     qDebug() << "Settings file path:" << settings.fileName();
 
     // Post load
-
     //QTimer *timer = new QTimer(this);
     //connect(timer, &QTimer::timeout, this, &MainWindow::updateCapture);
     //timer->start(500);
+    // this->setStyle("fusion");
+    // QApplication::setStyle("Fusion");
 
+    qDebug() << QApplication::screens();
+
+    QPixmap mCapture = ui->capturePreviewLabel->pixmap();
+    // capturePixmap = &mPixmap;
+
+
+    // im ending it all
+    QImage image(QSize(1920, 1080), QImage::Format_RGB32);
+    QPainter painter(&image);
+    painter.fillRect(QRectF(0,0,1920,1920),QColor(220, 220, 220, 255));
+    painter.setBrush(Qt::green);
+    painter.setPen(QPen(Qt::black));
+    painter.setFont(QFont("font", 48));
+    painter.drawText(QRectF(0, 0, 1920, 1080), Qt::AlignCenter, "Your screen");
+    // image.save("testImage.png");
+
+    // placeholder coords
+    // in this case, a youtube video from my browser
+    painter.fillRect(QRectF(99, 175, 1277, 718), QColor(255, 0, 0, 63));
+
+    capturePixmap = QPixmap::fromImage(image);
+    ui->capturePreviewLabel->setPixmap(capturePixmap);
+    ui->capturePreviewLabel->setMinimumSize(1, 1);
+    ui->capturePreviewLabel->setGeometry(0, 0, capturePixmap.width(), capturePixmap.height());
+    updateCapture();
 }
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    updateCapture();
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 void MainWindow::updateCapture() {
-    //
-    QScreen *screen = QApplication::primaryScreen();
-    QPixmap screenshot = screen->grabWindow(0, 0, 0, screen->size().width(), screen->size().height());
-    //QPixmap scaled = screenshot.scaled(ui->capturePreviewLabel->width(), ui->capturePreviewLabel->height(), Qt::KeepAspectRatio);
     int w = ui->capturePreviewLabel->width();
     int h = ui->capturePreviewLabel->height();
-    // qDebug() << w << h;
-    ui->capturePreviewLabel->setPixmap(screenshot.scaled(w, h, Qt::KeepAspectRatio));
+    ui->capturePreviewLabel->setPixmap(capturePixmap.scaled(w, h, Qt::KeepAspectRatio));
 }
 void MainWindow::on_snapButton_clicked()
 {

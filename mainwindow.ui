@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>511</width>
-    <height>471</height>
+    <width>458</width>
+    <height>442</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -74,91 +74,101 @@
        </property>
        <item alignment="Qt::AlignTop">
         <widget class="QPushButton" name="snapButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
-           <width>32</width>
-           <height>32</height>
+           <width>0</width>
+           <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>24</width>
-           <height>24</height>
+           <width>16777215</width>
+           <height>16777215</height>
           </size>
          </property>
          <property name="toolTip">
           <string>Screenshot</string>
          </property>
          <property name="text">
-          <string/>
+          <string>Snap</string>
          </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>../../../../Downloads/codicon--device-camera.svg</normaloff>../../../../Downloads/codicon--device-camera.svg</iconset>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QPushButton" name="pushButton">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="minimumSize">
           <size>
-           <width>30</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>30</height>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Record</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="presetsComboBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>128</width>
+           <height>16777215</height>
           </size>
          </property>
          <property name="frame">
           <bool>true</bool>
          </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Preferred</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>5</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QComboBox" name="comboBox_2">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>30</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>30</height>
-          </size>
-         </property>
+         <item>
+          <property name="text">
+           <string>something</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>just for reference</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>meow</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item>
@@ -178,38 +188,62 @@
         </spacer>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkBox_2">
+        <widget class="QPushButton" name="pushButton_2">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>24</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="text">
           <string/>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>../../../../Downloads/codicon--eye-closed.svg</normaloff>
-           <normalon>../../../../Downloads/codicon--eye.svg</normalon>../../../../Downloads/codicon--eye-closed.svg</iconset>
+          <iconset resource="resources.qrc">
+           <normaloff>:/resources_root/icons/ph--eye-slash-light.svg</normaloff>
+           <normalon>:/resources_root/icons/ph--eye-light.svg</normalon>:/resources_root/icons/ph--eye-slash-light.svg</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="maximumSize">
+          <size>
+           <width>24</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="text">
           <string/>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>../../../../Downloads/codicon--pinned.svg</normaloff>
-           <normalon>../../../../Downloads/codicon--pin.svg</normalon>../../../../Downloads/codicon--pinned.svg</iconset>
+          <iconset resource="resources.qrc">
+           <normaloff>:/resources_root/icons/ph--push-pin-slash-light.svg</normaloff>
+           <normalon>:/resources_root/icons/ph--push-pin-light.svg</normalon>:/resources_root/icons/ph--push-pin-slash-light.svg</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -261,6 +295,9 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
+          <property name="opaqueResize">
+           <bool>true</bool>
+          </property>
           <widget class="QLabel" name="capturePreviewLabel">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
@@ -293,8 +330,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>248</width>
-              <height>360</height>
+              <width>68</width>
+              <height>339</height>
              </rect>
             </property>
            </widget>
@@ -360,7 +397,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>511</width>
+     <width>458</width>
      <height>21</height>
     </rect>
    </property>
@@ -397,6 +434,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/resources_root">
+        <file>icons/ph--eye-light.svg</file>
+        <file>icons/ph--eye-slash-light.svg</file>
+        <file>icons/ph--push-pin-light.svg</file>
+        <file>icons/ph--push-pin-slash-light.svg</file>
+    </qresource>
+</RCC>
