@@ -9,12 +9,20 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    configmanager/configmanager.cpp \
+    ui_components/capturecontainer.cpp \
+    ui_components/capturerenderer.cpp \
+    ui_components/presetobject.cpp \
     main.cpp \
     mainwindow.cpp \
     logcat/logcat.cpp \
     snapper/snapper.cpp
 
 HEADERS += \
+    configmanager/configmanager.h \
+    ui_components/capturecontainer.h \
+    ui_components/capturerenderer.h \
+    ui_components/presetobject.h \
     mainwindow.h \
     logcat/logcat.h \
     snapper/snapper.h

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>458</width>
-    <height>442</height>
+    <width>512</width>
+    <height>475</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -154,21 +154,6 @@
          <property name="frame">
           <bool>true</bool>
          </property>
-         <item>
-          <property name="text">
-           <string>something</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>just for reference</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>meow</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item>
@@ -289,53 +274,9 @@
         </property>
         <item>
          <widget class="QSplitter" name="splitter">
-          <property name="frameShape">
-           <enum>QFrame::Box</enum>
-          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="opaqueResize">
-           <bool>true</bool>
-          </property>
-          <widget class="QLabel" name="capturePreviewLabel">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="scaledContents">
-            <bool>false</bool>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-          <widget class="QScrollArea" name="scrollArea">
-           <property name="frameShape">
-            <enum>QFrame::Box</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Plain</enum>
-           </property>
-           <property name="widgetResizable">
-            <bool>true</bool>
-           </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>68</width>
-              <height>339</height>
-             </rect>
-            </property>
-           </widget>
-          </widget>
          </widget>
         </item>
        </layout>
@@ -397,7 +338,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>458</width>
+     <width>512</width>
      <height>21</height>
     </rect>
    </property>
