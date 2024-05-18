@@ -6,6 +6,15 @@
 #include <QTextEdit>
 #include <QMainWindow>
 
+enum LogType {
+    Info,
+    Debug,
+    Success,
+    Warning,
+    Error,
+    Critical
+};
+
 class Logcat : public QObject
 {
 
@@ -16,15 +25,11 @@ class Logcat : public QObject
 
     public:
         // set logcat
-        static void setLogcat(QTextEdit *textEdit);
+        void setLogcat(QTextEdit *textEdit);
         // get logger
         static QTextEdit *getLogcat();
-        /*
-         *  Main Functions
-         */
-        static void logInfo(QString text);
-        // static void logError(QString text);
-        // static void logWarning(QString text);
+        static void log(LogType type, QString tag, QString m);
+
 };
 
 #endif // LOGCAT_H

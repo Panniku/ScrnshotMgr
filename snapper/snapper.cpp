@@ -7,10 +7,10 @@ void Snapper::screenshot() {
     QScreen *screen = QApplication::primaryScreen();
     QPixmap screenshot = screen->grabWindow(0, 0, 0, screen->size().width(), screen->size().height());
 
-    Logcat::logInfo("Took Screenshot.");
+    Logcat::log(LogType::Warning, "Snapper", "Took Screenshot.");
 
     QSettings settings;
-    QString saveDir = settings.value("application/snaps_dir").toString();
+    QString saveDir = settings.value("Application/SnapsDir").toString();
     QString name = "/Snap_";
     QString saveDT = QDateTime::currentDateTime().toString("yyyyMMddhhmmss");
     QString saveFileName = saveDir + name + saveDT;
@@ -31,7 +31,7 @@ void Snapper::screenshot() {
             QFileInfo f(path, path.absolutePath());
             // settings.setValue("application/snaps_dir", f.absolutePath());
             // settings.sync();
-            Logcat::logInfo("Set directory: " + f.absolutePath());
+            // Logcat::logInfo("Set directory: " + f.absolutePath());
             qDebug() << f.absolutePath();
         }
 
@@ -42,7 +42,7 @@ void Snapper::screenshot() {
         qDebug() << saveDir;
         qDebug() << saveDir + name + saveDT;
         screenshot.save(saveDir + name + saveDT + ".png");
-        qDebug() << settings.value("application/snaps_dir");
+        qDebug() << settings.value("Application/SnapsDir");
     }
 
     settings.sync();

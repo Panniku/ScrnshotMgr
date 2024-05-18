@@ -1,12 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMainWindow>
 #include <QSettings>
 
-#include <ui_components/capturecontainer.h>
+#include <ui_components/capture/capturecontainer.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -20,16 +21,21 @@ class MainWindow : public QMainWindow
 
     private:
         QPixmap capturePixmap;
+        QRectF captureRect;
         CaptureContainer *captureContainer;
         QHBoxLayout *tempBox;
         QLabel *capturePreviewLabel, *captureDisplayLabel;
+        QGroupBox *capturePreviewBox;
         //
         // void updateCapture();
 
     public:
         MainWindow(QWidget *parent = nullptr);
-        void resizeEvent(QResizeEvent *event);
         ~MainWindow();
+
+        // Events
+        void resizeEvent(QResizeEvent *event);
+        void closeEvent(QCloseEvent *event);
 
     private slots:
         void on_snapButton_clicked();

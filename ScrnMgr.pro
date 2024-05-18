@@ -10,9 +10,10 @@ CONFIG += c++17
 
 SOURCES += \
     configmanager/configmanager.cpp \
-    ui_components/capturecontainer.cpp \
-    ui_components/capturerenderer.cpp \
-    ui_components/presetobject.cpp \
+    ui_components/capture/capturecontainer.cpp \
+    ui_components/capture/capturerenderer.cpp \
+    ui_components/logtextedit.cpp \
+    ui_components/presets/presetobject.cpp \
     main.cpp \
     mainwindow.cpp \
     logcat/logcat.cpp \
@@ -20,9 +21,10 @@ SOURCES += \
 
 HEADERS += \
     configmanager/configmanager.h \
-    ui_components/capturecontainer.h \
-    ui_components/capturerenderer.h \
-    ui_components/presetobject.h \
+    ui_components/capture/capturecontainer.h \
+    ui_components/capture/capturerenderer.h \
+    ui_components/logtextedit.h \
+    ui_components/presets/presetobject.h \
     mainwindow.h \
     logcat/logcat.h \
     snapper/snapper.h
