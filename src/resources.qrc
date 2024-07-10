@@ -6,5 +6,6 @@
         <file>icons/ph--push-pin-slash-light.svg</file>
         <file>icons/ph--plus.svg</file>
         <file>icons/ph--magnifying-glass.svg</file>
+        <file>themes/dark.qss</file>
     </qresource>
 </RCC>
