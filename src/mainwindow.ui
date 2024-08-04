@@ -17,7 +17,10 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>ScrnMgr</string>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -192,6 +195,10 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="toolTip">
+          <string>Toggle to keep the window on the screen when taking a screenshot.
+This option is off by default, You can simply turn on by toggling this at anytime.</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -215,6 +222,10 @@
            <width>24</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="toolTip">
+          <string>Toggle to pin window to the screen
+*Due to a bug with Qt, the application has to &quot;flash&quot; for the toggle to work.</string>
          </property>
          <property name="text">
           <string/>
@@ -316,7 +327,7 @@
            </size>
           </property>
           <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
+           <enum>QFrame::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Plain</enum>

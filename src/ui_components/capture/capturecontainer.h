@@ -15,7 +15,7 @@ class CaptureContainer : public QFrame
         QGroupBox *mPreviewBox;
         QString *mPreviewName;
         QRectF mRect;
-        static inline QPixmap *mCaptureRenderPixmap = nullptr;
+        QPixmap *mCaptureRenderPixmap;
 
     public:
         CaptureContainer();
@@ -37,7 +37,7 @@ class CaptureContainer : public QFrame
         void setPreviewBox(QGroupBox *newGroupBox);
         void setRect(QRectF rect);
         void setPreviewName(QString *newPreviewName);
-        static void setCapturePixmap(QPixmap *newCapturePixmap);
+        void setCapturePixmap(QPixmap *newCapturePixmap);
 };
 
 #endif // CAPTURECONTAINER_H

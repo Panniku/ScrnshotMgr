@@ -7,5 +7,9 @@
         <file>icons/ph--plus.svg</file>
         <file>icons/ph--magnifying-glass.svg</file>
         <file>themes/dark.qss</file>
+        <file>icons/ph--x-light.svg</file>
+        <file>icons/ph--trash-light.svg</file>
+        <file>icons/ph--arrow-square-out-light.svg</file>
+        <file>icons/ph--copy-simple-light.svg</file>
     </qresource>
 </RCC>

@@ -1,4 +1,4 @@
-#include "PresetObject.h"
+#include "presetobject.h"
 
 PresetObject::PresetObject() {}
 

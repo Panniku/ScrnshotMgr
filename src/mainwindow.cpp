@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QPair>
 #include <QLibraryInfo>
+#include "qclipboard.h"
 #include "src/ui_mainwindow.h"
 #include <QDockWidget>
 #include "ui_components/capture/capturerenderer.h"
@@ -15,6 +16,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "logcat/logcat.h"
+#include "./ui_components/capture/captureitem.h"
 
 QPixmap *mCaptureRender;
 
@@ -30,29 +32,55 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     logTextEdit->setWordWrapMode(QTextOption::NoWrap);
     ui->consoleTab->layout()->addWidget(logTextEdit);
 
+    // CONFIGMANAGER
     ConfigManager *configManager = new ConfigManager();
     Logcat *logcat = new Logcat();
     logcat->setLogcat(logTextEdit);
 
-
     configManager->initDefault();
-
     Logcat::log(LogType::Warning, "NOTICE", "If colors are bugged, this may be due to how we initialize colors. Sorry for the inconvenience!");
     logcat->log(LogType::Info, "―――――――――――――――――――――――――――――――――――――――――――――", "");
-    // CONFIGMANAGER
 
 
+
+    QScreen *screen = QApplication::primaryScreen();
 
 
     // Capture preview initialization
     captureContainer = new CaptureContainer();
+    captureContainer->setStyleSheet("border: 1px solid gray;");
     ui->splitter->addWidget(captureContainer);
 
     // THIS IS TEMPORARY
     // THIS IS TEMPORARY
     // THIS IS TEMPORARY
-    QScrollArea *temparea = new QScrollArea();
-    ui->splitter->addWidget(temparea);
+    capturesSplitter = new QSplitter();
+    ui->splitter->addWidget(capturesSplitter);
+    capturesSplitter->setOrientation(Qt::Vertical);
+
+    lastCapturePreview = new CaptureSimple();
+    lastCapturePreview->setStyleSheet("border: 1px solid gray;");
+    capturesSplitter->addWidget(lastCapturePreview);
+    lastPreview = new QLabel(lastCapturePreview);
+    lastPreview->setMinimumSize(1, 1);
+    lastPreview->setScaledContents(false);
+    lastPreview->setAlignment(Qt::AlignCenter);
+    lastPreview->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+    QImage image(QSize(1920, 1080),QImage::Format_RGB32);
+    QPainter painter(&image);
+    painter.fillRect(QRectF(0,0,1920,1920),QColor(200, 200, 200, 255));
+    QPixmap lsp = QPixmap::fromImage(image);
+    lastPreview->setPixmap(lsp);
+    lastCapturePreview->setCapture(lastPreview);
+    lastCapturePreview->setCapturePixmap(lsp);
+
+    lastTemp = new QLabel(lastCapturePreview);
+    lastTemp->setText("This area renders the last taken screenshot.\nNo screenshots taken yet.");
+    lastCapturePreview->setTempLabel(lastTemp);
+
+    captureList = new QListWidget(capturesSplitter);
+    capturesSplitter->addWidget(captureList);
 
     captureRenderLabel = new QLabel(captureContainer);
     captureRenderLabel->setPixmap(capturePixmap);
@@ -84,7 +112,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // WORK IN PROGRESS 
 
 
-    QScreen *screen = QApplication::primaryScreen();
+    //QScreen *screen = QApplication::primaryScreen();
     // QPixmap screenshot = screen->grabWindow(0, 0, 0, screen->size().width(), screen->size().height());
 
     PresetObject freedraw("freedraw", 0, "Free draw", PresetType::Freedraw, QRectF(0, 0, 0, 0));
@@ -111,18 +139,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->presetSearchItem->setClearButtonEnabled(true);
     ui->presetSearchItem->addAction(QIcon(":/resources_root/icons/ph--magnifying-glass.svg"), QLineEdit::LeadingPosition);
 
+    // ui->splitter->handle(0)->setStyleSheet("background-color: green");
 
     // some test
     // qDebug()  << ":/themes/dark.qss";
-    // QFile file(":/resources_root/themes/dark.qss");
-    // file.open(QFile::ReadOnly);
-    // QString styleSheet = QLatin1String(file.readAll());
-    // qApp->setStyleSheet(styleSheet);
+    // Currently, this only applies a border to the splitter handle lol
+    QFile file(":/resources_root/themes/dark.qss");
+    file.open(QFile::ReadOnly);
+    QString styleSheet = QLatin1String(file.readAll());
+    qApp->setStyleSheet(styleSheet);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::hideEvent(QHideEvent *event)
+{
+    QMainWindow::hideEvent(event);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
@@ -137,8 +172,56 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::on_snapButton_clicked()
 {
-    Snapper snapper;
-    // snapper.screenshot();
+    if (isHide) {
+        hide();
+        QTimer *timer = new QTimer(this);
+        timer->setInterval(400); // hardcoded, could change anytime
+        timer->setSingleShot(true);
+        connect(timer, &QTimer::timeout, this, &MainWindow::delayedScreenshot);
+        timer->start();
+    } else {
+        captureList->addItem("meow, taking screenshot");
+        SnapInterface *sWin = new SnapInterface(this, currentType, currentRect);
+        connect(sWin, &SnapInterface::onFinishScreenshot, this, &MainWindow::onScreenshotFinish);
+        connect(sWin, &SnapInterface::onCancel, this, &MainWindow::onScreenshotCancel);
+    }
+}
+
+
+void MainWindow::delayedScreenshot()
+{
+    // captureList->addItem("meow, taking screenshot");
+    SnapInterface *sWin = new SnapInterface(this, currentType, currentRect);
+    connect(sWin, &SnapInterface::onFinishScreenshot, this, &MainWindow::onScreenshotFinish);
+    connect(sWin, &SnapInterface::onCancel, this, &MainWindow::onScreenshotCancel);
+}
+
+
+void MainWindow::onScreenshotFinish(QPixmap &pixmap)
+{
+    if (isHide) show();
+    lastPreview->setPixmap(pixmap);
+    lastCapturePreview->triggerSnapped();
+    lastCapturePreview->setCapturePixmap(pixmap);
+    lastCapturePreview->updatePixmap();
+
+    QImage img(pixmap.toImage());
+    QClipboard *clip = QApplication::clipboard();
+    clip->setImage(img, QClipboard::Clipboard);
+
+    CaptureItem *item = new CaptureItem(pixmap, "Item 1");
+    // QPushButton *b = new QPushButton();
+    QListWidgetItem *listitem = new QListWidgetItem();
+    listitem->setSizeHint(QSize(1, item->height()));
+    captureList->addItem(listitem);
+    captureList->setItemWidget(listitem, item);
+
+    qDebug() << captureList->children().at(0)->children();
+}
+
+void MainWindow::onScreenshotCancel()
+{
+    if (isHide) show();
 }
 
 void MainWindow::on_presetsComboBox_currentIndexChanged(int i)
@@ -154,6 +237,7 @@ void MainWindow::on_presetsComboBox_currentIndexChanged(int i)
     PresetObject obj(name.toLower(), preset);
     qDebug() << "name: "    << obj.getRegionName();
     qDebug() << "name: "    << obj.getRect();
+    qDebug() << "name: "    << obj.getPresetIntType();
 
     QRectF newRect = obj.getRect();
     CaptureRenderer *render = new CaptureRenderer();
@@ -162,5 +246,24 @@ void MainWindow::on_presetsComboBox_currentIndexChanged(int i)
     captureContainer->setRect(newRect);
     captureContainer->setPreviewName(&name);
     captureContainer->updateCapture();
+    //
+    currentType = static_cast<PresetType>(obj.getPresetIntType());
+    currentRect = obj.getRect();
+}
+
+
+void MainWindow::on_toggleVisibility_toggled(bool checked)
+{
+    isHide = !checked;
+}
+
+
+void MainWindow::on_toggleOnTop_toggled(bool checked)
+{
+    // hide() show() is required because of how Qt handles window flags
+    // https://forum.qt.io/topic/60642/framelesswindowhint-fails-at-runtime-on-mainwindow/13
+    hide();
+    setWindowFlag(Qt::WindowStaysOnTopHint, checked);
+    show();
 }
 

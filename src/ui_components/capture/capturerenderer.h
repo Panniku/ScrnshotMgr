@@ -10,13 +10,6 @@ class CaptureRenderer : public QObject
     Q_OBJECT
 
     private:
-        QRect *rect;
-        QPainter *painter;
-        QPen *pen;
-        QColor *background, *border;
-        QImage *baseImage;
-
-        // void drawBaseImage();
 
     public:
         CaptureRenderer();

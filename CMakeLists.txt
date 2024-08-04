@@ -31,9 +31,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 	src/configmanager/configmanager.h src/configmanager/configmanager.cpp
 	src/logcat/logcat.h src/logcat/logcat.cpp
 	src/snapper/snapper.h src/snapper/snapper.cpp
-	src/snapper/snapwindow.h src/snapper/snapwindow.cpp
-	src/snapper/snapwindow.ui
+	src/snapper/snapinterface.h src/snapper/snapinterface.cpp
+	src/snapper/snapinterface.ui
 	src/resources.qrc
+	src/snapper/drawsnap.h src/snapper/drawsnap.cpp
+	src/ui_components/capture/capturesimple.h src/ui_components/capture/capturesimple.cpp
+	src/ui_components/capture/captureitem.h src/ui_components/capture/captureitem.cpp
 
     )
 # Define target properties for Android with Qt 6 as:
