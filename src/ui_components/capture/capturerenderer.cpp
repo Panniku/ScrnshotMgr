@@ -1,4 +1,5 @@
 #include "capturerenderer.h"
+#include "qpalette.h"
 
 
 
@@ -7,10 +8,11 @@ CaptureRenderer::CaptureRenderer()
     // drawBaseImage();
 }
 
-QPixmap CaptureRenderer::drawRenderedImage(QRectF rect)
+QPixmap CaptureRenderer::drawRenderedImage(float width, float height, QRectF rect)
 {
-    QImage baseImage(QSize(1920, 1080), QImage::Format_RGB32);
+    QImage baseImage(QSize(width, height), QImage::Format_RGB32);
     QPainter painter(&baseImage);
-    painter.fillRect(QRectF(0,0,1920,1920),QColor(220, 220, 220, 255));
+    QPalette p;
+    painter.fillRect(QRectF(0,0,width, height), p.brush(QPalette::Dark));
     return QPixmap::fromImage(baseImage);
 }

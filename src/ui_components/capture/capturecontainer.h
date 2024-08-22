@@ -5,13 +5,21 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QGroupBox>
+#include <QVideoWidget>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QGraphicsVideoItem>
 
 class CaptureContainer : public QFrame
 {
     Q_OBJECT
 
     private:
-        QLabel *mCaptureRender, *mDisplayText;
+        float mWidth, mHeight;
+        QGraphicsView *mGraphicsView;
+        QGraphicsScene *mDisplayScene;
+        QGraphicsVideoItem *mDisplayRender;
+        QLabel *mDisplayText;
         QGroupBox *mPreviewBox;
         QString *mPreviewName;
         QRectF mRect;
@@ -20,10 +28,12 @@ class CaptureContainer : public QFrame
     public:
         CaptureContainer();
         void resizeEvent(QResizeEvent *event);
+        void showEvent(QShowEvent *event);
         void updateCapture();
 
         // Get
-        QLabel *getCapture();
+        QGraphicsScene *getDisplayScene();
+        QGraphicsVideoItem *getDisplayRender();
         QString getDisplayText();
         QGroupBox *getPreviewBox();
         QRectF getRect();
@@ -31,7 +41,9 @@ class CaptureContainer : public QFrame
         QPixmap *getCapturePixmap();
 
         // Set
-        void setCapture(QLabel *newCapture);
+        void setDimens(float width, float height);
+        void setDisplayScene(QGraphicsScene *displayScene);
+        void setDisplayRender(QGraphicsVideoItem *displayRender);
         void setDisplayLabel(QLabel *displayLabel);
         void setDisplayText(QString *newText);
         void setPreviewBox(QGroupBox *newGroupBox);

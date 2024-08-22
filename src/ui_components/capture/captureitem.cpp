@@ -2,6 +2,7 @@
 
 #include <QHBoxLayout>
 #include <QSpacerItem>
+#include "../../utils/utils.h"
 
 CaptureItem::CaptureItem(QPixmap image, QString text)
 {
@@ -19,17 +20,26 @@ CaptureItem::CaptureItem(QPixmap image, QString text)
     screenshotText->setStyleSheet("margin-left: 4px;");
 
     copyButton = new QPushButton();
-    copyButton->setIcon(QIcon(":/resources_root/icons/ph--copy-simple-light.svg"));
-    copyButton->setMinimumWidth(24);
     copyButton->setFixedSize(QSize(24, 24));
+    copyButton->setFlat(true);
 
     showButton = new QPushButton();
-    showButton->setIcon(QIcon(":/resources_root/icons/ph--arrow-square-out-light.svg"));
     showButton->setFixedSize(QSize(24, 24));
+    showButton->setFlat(true);
 
     deleteButton = new QPushButton();
-    deleteButton->setIcon(QIcon(":/resources_root/icons/ph--trash-light.svg"));
     deleteButton->setFixedSize(QSize(24, 24));
+    deleteButton->setFlat(true);
+
+    QPalette p = palette();
+    QBrush b = p.brush(QPalette::Light);
+
+    QPixmap copyPixmap = QPixmap(":/res/icons/ph--copy-simple-light.svg");
+    copyButton->setIcon(Utils::getMaskedRecoloredIconPixmap(copyPixmap, b));
+    QPixmap showPixmap = QPixmap(":/res/icons/ph--arrow-square-out-light.svg");
+    showButton->setIcon(Utils::getMaskedRecoloredIconPixmap(showPixmap, b));
+    QPixmap deletePixmap = QPixmap(":/res/icons/ph--trash-light.svg");
+    deleteButton->setIcon(Utils::getMaskedRecoloredIconPixmap(deletePixmap, b));
 
     layout->addWidget(screenshotImage);
     layout->addWidget(screenshotText);

@@ -13,7 +13,7 @@ class CaptureRenderer : public QObject
 
     public:
         CaptureRenderer();
-        QPixmap drawRenderedImage(QRectF rect);
+        QPixmap drawRenderedImage(float width, float height, QRectF rect);
 };
 
 #endif // CAPTURERENDERER_H

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>726</width>
+    <height>507</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -51,6 +51,12 @@
        <size>
         <width>0</width>
         <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>26</height>
        </size>
       </property>
       <property name="frameShape">
@@ -202,11 +208,6 @@ This option is off by default, You can simply turn on by toggling this at anytim
          <property name="text">
           <string/>
          </property>
-         <property name="icon">
-          <iconset resource="resources.qrc">
-           <normaloff>:/resources_root/icons/ph--eye-slash-light.svg</normaloff>
-           <normalon>:/resources_root/icons/ph--eye-light.svg</normalon>:/resources_root/icons/ph--eye-slash-light.svg</iconset>
-         </property>
          <property name="checkable">
           <bool>true</bool>
          </property>
@@ -230,11 +231,6 @@ This option is off by default, You can simply turn on by toggling this at anytim
          <property name="text">
           <string/>
          </property>
-         <property name="icon">
-          <iconset resource="resources.qrc">
-           <normaloff>:/resources_root/icons/ph--push-pin-slash-light.svg</normaloff>
-           <normalon>:/resources_root/icons/ph--push-pin-light.svg</normalon>:/resources_root/icons/ph--push-pin-slash-light.svg</iconset>
-         </property>
          <property name="checkable">
           <bool>true</bool>
          </property>
@@ -247,26 +243,23 @@ This option is off by default, You can simply turn on by toggling this at anytim
      </widget>
     </item>
     <item>
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="enabled">
-       <bool>true</bool>
+     <widget class="QSplitter" name="mainSplitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
-      <property name="tabPosition">
-       <enum>QTabWidget::North</enum>
-      </property>
-      <property name="tabShape">
-       <enum>QTabWidget::Rounded</enum>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <property name="tabBarAutoHide">
-       <bool>false</bool>
-      </property>
-      <widget class="QWidget" name="captureTab">
-       <attribute name="title">
-        <string>Capture</string>
-       </attribute>
+      <widget class="QFrame" name="presetsTabRoot">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <property name="spacing">
          <number>0</number>
@@ -284,53 +277,12 @@ This option is off by default, You can simply turn on by toggling this at anytim
          <number>0</number>
         </property>
         <item>
-         <widget class="QSplitter" name="splitter">
+         <widget class="QFrame" name="presetTabItems">
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
           </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="opaqueResize">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="presetsTab">
-       <attribute name="title">
-        <string>Presets</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QFrame" name="presetsTabItems">
-          <property name="maximumSize">
-           <size>
-            <width>180</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
           <property name="frameShadow">
-           <enum>QFrame::Plain</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <property name="spacing">
@@ -367,9 +319,6 @@ This option is off by default, You can simply turn on by toggling this at anytim
                <property name="placeholderText">
                 <string>Search</string>
                </property>
-               <property name="clearButtonEnabled">
-                <bool>false</bool>
-               </property>
               </widget>
              </item>
              <item>
@@ -382,10 +331,6 @@ This option is off by default, You can simply turn on by toggling this at anytim
                </property>
                <property name="text">
                 <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="resources.qrc">
-                 <normaloff>:/resources_root/icons/ph--plus.svg</normaloff>:/resources_root/icons/ph--plus.svg</iconset>
                </property>
                <property name="flat">
                 <bool>false</bool>
@@ -400,61 +345,6 @@ This option is off by default, You can simply turn on by toggling this at anytim
           </layout>
          </widget>
         </item>
-        <item>
-         <widget class="QFrame" name="presetTabProps">
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Plain</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="imageTab">
-       <attribute name="title">
-        <string>Images</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>This feature may be added soon!
-It simply serves as a way to check your current captured screenshots easier instead of waiting for explorer.exe to recache everything 
-
-:3</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="consoleTab">
-       <attribute name="title">
-        <string>Console</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
        </layout>
       </widget>
      </widget>
@@ -466,7 +356,7 @@ It simply serves as a way to check your current captured screenshots easier inst
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>640</width>
+     <width>726</width>
      <height>17</height>
     </rect>
    </property>
@@ -486,7 +376,11 @@ It simply serves as a way to check your current captured screenshots easier inst
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+  </widget>
   <action name="actionNew_Snap">
    <property name="text">
     <string>New Snap</string>
@@ -503,8 +397,6 @@ It simply serves as a way to check your current captured screenshots easier inst
    </property>
   </action>
  </widget>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

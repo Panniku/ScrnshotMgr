@@ -11,37 +11,34 @@
 void ConfigManager::initDefault()
 {
 
-    // qDebug() << settings.value("Colors/LogCritical", "#000000");
-
-    // Logcat::log(LogType::Debug, "Init", "Started process.");
-    // Logcat::log(LogType::Info, "Init", "Qt version: " + QLibraryInfo::version().toString());
-    // Logcat::log(LogType::Info, ":3", "Read if cute");
-
-    QCoreApplication::setApplicationName("config");
-    QCoreApplication::setOrganizationName("ScrnMgr");
-    QSettings::setDefaultFormat(QSettings::IniFormat);
-
-    QSettings settings;
+    // Thanks to some documentation and brain thinking, QSettings is simply summed up like this.
+    // No fancy Organizations or Domains, this just works.
+    settings = new QSettings(
+        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/config.ini",
+        QSettings::IniFormat
+        );
     Logcat::log(LogType::Debug, "ConfigManager", "Reading config...");
 
+    qDebug() << settings->fileName();
+
     // Default settings initialization
+    //
+    //
+
+    // Theme (Light/Dark)
+    if(!settings->contains("Application/Theme")) {
+        settings->setValue("Application/Theme", "light");
+    }
+
+    // SnapsDir
     QString snapsDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + "/ScrnMgr";
     QDir dir(snapsDir);
-    if(!dir.exists())
-    {
+    if(!dir.exists()) {
         dir.mkpath(".");
         Logcat::log(LogType::Debug, "ConfigManager", "Created snapsDir directory.");
     }
-
-
-
-    // SnapsDir
-    qDebug() << settings.status();
-    qDebug() << settings.fileName();
-    qDebug() << settings.contains("Application/SnapsDir");
-    qDebug() << settings.value("Application/SnapsDir", "??");
-    if(settings.contains("Application/SnapsDir") == false) {
-        settings.setValue("Application/SnapsDir", snapsDir);
+    if(!settings->contains("Application/SnapsDir")) {
+        settings->setValue("Application/SnapsDir", snapsDir);
         Logcat::log(LogType::Debug, "ConfigManager", "Created snapsDir path.");
     }
 
@@ -55,24 +52,25 @@ void ConfigManager::initDefault()
     logColors.insert("Colors/LogError",     "#A54242");
     logColors.insert("Colors/LogCritical",  "#CC6666");
 
-    for (auto i = logColors.constBegin(); i != logColors.constEnd(); i++)
-    {
-        if(settings.contains(i.key()) == false)
-        {
-            settings.setValue(i.key(), i.value());
+    for (auto i = logColors.constBegin(); i != logColors.constEnd(); i++) {
+        if(!settings->contains(i.key())) {
+            settings->setValue(i.key(), i.value());
             Logcat::log(LogType::Debug, "ConfigManager", "Creating color " + i.key());
         }
     }
 }
 
-QVariant ConfigManager::getValue(QString key, QVariant fallback)
+QVariant ConfigManager::getValue(QAnyStringView key)
 {
-    QSettings settings;
-    return settings.value(key, fallback);
+    return settings->value(key);
 }
 
 void ConfigManager::setValue(QString key, QVariant value)
 {
-    QSettings settings;
-    settings.setValue(key, value);
+    settings->setValue(key, value);
+}
+
+QSettings *ConfigManager::getSettings()
+{
+    return settings;
 }

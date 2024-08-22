@@ -1,13 +1,16 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QComboBox>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QListWidget>
 #include <QMainWindow>
 #include <QSettings>
+#include <QSpinBox>
 #include <QSplitter>
+#include <QVideoWidget>
 
 #include "ui_components/capture/capturecontainer.h"
 #include "ui_components/capture/capturesimple.h"
@@ -24,16 +27,31 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
     private:
-        QPixmap capturePixmap;
+        QSettings *settings;
+        float displayWidth, displayHeight;
         QRectF captureRect;
+
+        // Central View Containers
+        QFrame *centralViewContainer;
+        // QSplitter *centralViewSplitter; // unknown
+
+        // Editor View
+        QLineEdit *nameEdit;
+        QComboBox *typeEdit;
+        QSpinBox *xEdit, *yEdit, *widthEdit, *heightEdit;
+
+        // Preview
         CaptureContainer *captureContainer;
         QHBoxLayout *tempBox;
-        QLabel *captureRenderLabel, *captureDisplayLabel;
+        QVideoWidget *displayRender;
+        QLabel *captureDisplayLabel;
+        QGroupBox *capturePreviewBox;
+
+        // Session captures View
         QSplitter *capturesSplitter;
         CaptureSimple *lastCapturePreview;
         QLabel *lastPreview, *lastTemp;
         QListWidget *captureList;
-        QGroupBox *capturePreviewBox;
         //
         PresetType currentType;
         QRectF currentRect;
@@ -51,7 +69,9 @@ class MainWindow : public QMainWindow
         void resizeEvent(QResizeEvent *event);
         void closeEvent(QCloseEvent *event);
 
-        //
+        // Functions
+        void setupUi();
+        void setupIcons();
 
 
     private slots:

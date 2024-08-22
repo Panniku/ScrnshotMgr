@@ -14,37 +14,39 @@ QTextEdit *Logcat::getLogcat()
 
 void Logcat::log(LogType type, QString tag, QString msg)
 {
-    QTextCursor cursor = logcat->textCursor();
-    QTextCharFormat format;
-    // format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogInfo", "#000000").toString())));
-    switch(type){
+    if (logcat != nullptr) {
+        QTextCursor cursor = logcat->textCursor();
+        QTextCharFormat format;
+        // format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogInfo", "#000000").toString())));
+        switch(type){
         case Info:
-            format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogInfo", "#000000").toString())));
+            format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogInfo").toString())));
             break;
         case Debug:
-            format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogDebug", "#000000").toString())));
+            format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogDebug").toString())));
             break;
         case Success:
-            format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogSuccess", "#000000").toString())));
+            format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogSuccess").toString())));
             break;
         case Warning:
-            format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogWarning", "#000000").toString())));
+            format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogWarning").toString())));
             break;
         case Error:
-            format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogError", "#000000").toString())));
+            format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogError").toString())));
             break;
         case Critical:
-            format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogCritical", "#000000").toString())));
+            format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogCritical").toString())));
             break;
         }
-    // qDebug() << ConfigManager::getValue("Colors/LogInfo", "#000000").toString();
+        // qDebug() << ConfigManager::getValue("Colors/LogInfo", "#000000").toString();
 
-    format.setFontWeight(QFont::Bold);
-    cursor.setCharFormat(format);
-    cursor.insertText("[" + tag + "] ");
+        format.setFontWeight(QFont::Bold);
+        cursor.setCharFormat(format);
+        cursor.insertText("[" + tag + "] ");
 
-    format.setFontWeight(QFont::Normal);
-    format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogDefault", "#000000").toString())));
-    cursor.setCharFormat(format);
-    cursor.insertText(msg + "\n");
+        format.setFontWeight(QFont::Normal);
+        format.setForeground(QBrush(QColor::fromString(ConfigManager::getValue("Colors/LogDefault").toString())));
+        cursor.setCharFormat(format);
+        cursor.insertText(msg + "\n");
+    }
 }

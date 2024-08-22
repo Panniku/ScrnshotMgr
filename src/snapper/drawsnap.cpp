@@ -4,8 +4,6 @@
 DrawSnap::DrawSnap(QWidget *parent) : QFrame(parent){
     pos = new QLabel(this);
     pos->setAlignment(Qt::AlignCenter);
-    // pos->setMinimumSize(0, 0);
-    // pos->setText("0x0");
     pos->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 

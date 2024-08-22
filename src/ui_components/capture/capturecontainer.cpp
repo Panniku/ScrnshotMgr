@@ -1,18 +1,51 @@
 #include "capturecontainer.h"
+#include "qapplication.h"
+
+#include <QMediaCaptureSession>
+#include <QScreenCapture>
 
 CaptureContainer::CaptureContainer()
 {
-    // Empty constructor
+    mGraphicsView = new QGraphicsView(this);
+
+    mDisplayScene = new QGraphicsScene();
+    mGraphicsView->setScene(mDisplayScene);
+
+    mDisplayRender = new QGraphicsVideoItem();
+    mDisplayScene->addItem(mDisplayRender);
+
+    QScreenCapture *screenCapture = new QScreenCapture(qApp->primaryScreen());
+    screenCapture->start();
+    QMediaCaptureSession *media = new QMediaCaptureSession();
+    media->setScreenCapture(screenCapture);
+    media->setVideoOutput(mDisplayRender);
 }
 
-QLabel *CaptureContainer::getCapture()
+void CaptureContainer::setDimens(float width, float height)
 {
-    return mCaptureRender;
+    mWidth = width;
+    mHeight = height;
 }
 
-void CaptureContainer::setCapture(QLabel *newCapture)
+
+QGraphicsScene *CaptureContainer::getDisplayScene()
 {
-    mCaptureRender = newCapture;
+    return mDisplayScene;
+}
+
+void CaptureContainer::setDisplayScene(QGraphicsScene *displayScene)
+{
+    mDisplayScene = displayScene;
+}
+
+QGraphicsVideoItem *CaptureContainer::getDisplayRender()
+{
+    return mDisplayRender;
+}
+
+void CaptureContainer::setDisplayRender(QGraphicsVideoItem *displayRender)
+{
+    mDisplayRender = displayRender;
 }
 
 QString CaptureContainer::getDisplayText()
@@ -79,10 +112,17 @@ void CaptureContainer::resizeEvent(QResizeEvent *event)
     updateCapture();
 }
 
+void CaptureContainer::showEvent(QShowEvent *event) {
+    QFrame::showEvent(event);
+    updateCapture();
+    QRectF bounds = rect(); // CANT FOOL ME WITH THIS ONE, Qt!
+    mGraphicsView->fitInView(bounds, Qt::KeepAspectRatio);
+}
+
+
 void CaptureContainer::updateCapture()
 {
-    // This is fixed at 1920x1080 for standard.
-    const float aspectRatio = 1920.0f / 1080.0f;
+    const float aspectRatio = mWidth / mHeight;
     int containerWidth = width();
     int containerHeight = height();
 
@@ -94,27 +134,27 @@ void CaptureContainer::updateCapture()
         newLabelWidth = static_cast<int>(containerHeight * aspectRatio);
     }
 
-    // Center/Scale the pixmap (temp) label
+    // Scale the display render
     int labelX = (containerWidth - newLabelWidth) / 2;
     int labelY = (containerHeight - newLabelHeight) / 2;
-    mCaptureRender->setGeometry(labelX, labelY, newLabelWidth, newLabelHeight);
+
+    mGraphicsView->setGeometry(labelX, labelY, newLabelWidth, newLabelHeight);
+    QRectF bounds = mDisplayScene->sceneRect();
+    mGraphicsView->fitInView(bounds, Qt::KeepAspectRatio);
 
     // Adjust the groupBox position and size based on the label size
     // Here we keep the groupBox's position and size relative to the label size
     // Credits: the last remaining tokens of a GPT-4o Trial :3
-    float relativeX         = mRect.x() / 1920.0f;
-    float relativeY         = mRect.y() / 1080.0f;
-    float relativeWidth     = mRect.width() / 1920.0f;
-    float relativeHeight    = mRect.height() / 1080.0f;
+    float relativeX         = mRect.x() / mWidth;
+    float relativeY         = mRect.y() / mHeight;
+    float relativeWidth     = mRect.width() / mWidth;
+    float relativeHeight    = mRect.height() / mHeight;
 
     int groupBoxX = labelX + static_cast<int>(relativeX * newLabelWidth);
     int groupBoxY = labelY + static_cast<int>(relativeY * newLabelHeight);
     int groupBoxWidth = static_cast<int>(relativeWidth * newLabelWidth);
     int groupBoxHeight = static_cast<int>(relativeHeight * newLabelHeight);
 
-
-    QPixmap scaled = mCaptureRenderPixmap->scaled(containerWidth, containerHeight, Qt::KeepAspectRatio);
-    mCaptureRender->setPixmap(scaled);
-    mDisplayText->setGeometry(mCaptureRender->x(), mCaptureRender->y(), mCaptureRender->width(), mCaptureRender->height());
+    mDisplayText->setGeometry(mGraphicsView->x(), mGraphicsView->y(), mGraphicsView->width(), mGraphicsView->height());
     mPreviewBox->setGeometry(groupBoxX, groupBoxY, groupBoxWidth, groupBoxHeight);
 }
