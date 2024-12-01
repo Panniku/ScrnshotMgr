@@ -11,7 +11,11 @@
 #include <QSpinBox>
 #include <QSplitter>
 #include <QVideoWidget>
+#include <QPushButton>
+#include <QMediaCaptureSession>
 
+#include "qimagecapture.h"
+#include "qscreencapture.h"
 #include "ui_components/capture/capturecontainer.h"
 #include "ui_components/capture/capturesimple.h"
 #include "ui_components/presets/presetobject.h"
@@ -28,23 +32,31 @@ class MainWindow : public QMainWindow
 
     private:
         QSettings *settings;
+        QPixmap capture;
         float displayWidth, displayHeight;
         QRectF captureRect;
 
-        // Central View Containers
-        QFrame *centralViewContainer;
-        // QSplitter *centralViewSplitter; // unknown
+        //
+        QScreenCapture *screenCapture;
+        QImageCapture *imageCapture;
+        QMediaCaptureSession *mediaCaptureSession;
 
-        // Editor View
-        QLineEdit *nameEdit;
-        QComboBox *typeEdit;
-        QSpinBox *xEdit, *yEdit, *widthEdit, *heightEdit;
+        // Toolbar stuff
+        QPushButton *snapButton, *recordButton;
+        QComboBox *presetsComboBox;
+        QPushButton *toggleVisibility, *toggleOnTop;
+
+        // Preset list stuff
+        QFrame *presetRoot;
+        QLineEdit *presetSearchItem;
+        QPushButton *presetAddItem;
+        QListWidget *presetListWidget;
 
         // Preview
         CaptureContainer *captureContainer;
         QHBoxLayout *tempBox;
         QVideoWidget *displayRender;
-        QLabel *captureDisplayLabel;
+        // QLabel *captureDisplayLabel;
         QGroupBox *capturePreviewBox;
 
         // Session captures View
@@ -75,16 +87,26 @@ class MainWindow : public QMainWindow
 
 
     private slots:
-        void on_snapButton_clicked();
-        void on_presetsComboBox_currentIndexChanged(int i);
 
-        void on_toggleVisibility_toggled(bool checked);
-        void on_toggleOnTop_toggled(bool checked);
+        void addPreset();
 
         //
-        void delayedScreenshot();
+        void snapButton_click();
+        void recordButton_click();
+        void presetsComboBoxIndexChanged(int i);
+
+        void toggleVisibility_toggled(bool checked);
+        void toggleOnTop_toggled(bool checked);
+
+        //
+        void imageCaptured(int id, QImage image);
+
+        //
+        void screenshot();
         void onScreenshotFinish(QPixmap &pixmap);
         void onScreenshotCancel();
+
+        void on_actionPreferences_triggered();
 
     private:
         Ui::MainWindow *ui;

@@ -31,14 +31,15 @@ CaptureItem::CaptureItem(QPixmap image, QString text)
     deleteButton->setFixedSize(QSize(24, 24));
     deleteButton->setFlat(true);
 
-    QPalette p = palette();
-    QBrush b = p.brush(QPalette::Light);
+    QPalette p;
+    QBrush b = p.brush(QPalette::Text);
 
     QPixmap copyPixmap = QPixmap(":/res/icons/ph--copy-simple-light.svg");
-    copyButton->setIcon(Utils::getMaskedRecoloredIconPixmap(copyPixmap, b));
     QPixmap showPixmap = QPixmap(":/res/icons/ph--arrow-square-out-light.svg");
-    showButton->setIcon(Utils::getMaskedRecoloredIconPixmap(showPixmap, b));
     QPixmap deletePixmap = QPixmap(":/res/icons/ph--trash-light.svg");
+
+    copyButton->setIcon(Utils::getMaskedRecoloredIconPixmap(copyPixmap, b));
+    showButton->setIcon(Utils::getMaskedRecoloredIconPixmap(showPixmap, b));
     deleteButton->setIcon(Utils::getMaskedRecoloredIconPixmap(deletePixmap, b));
 
     layout->addWidget(screenshotImage);

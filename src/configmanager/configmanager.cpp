@@ -27,7 +27,7 @@ void ConfigManager::initDefault()
 
     // Theme (Light/Dark)
     if(!settings->contains("Application/Theme")) {
-        settings->setValue("Application/Theme", "light");
+        settings->setValue("Application/Theme", "system");
     }
 
     // SnapsDir

@@ -4,9 +4,15 @@
 #include <QMediaCaptureSession>
 #include <QScreenCapture>
 
-CaptureContainer::CaptureContainer()
+CaptureContainer::CaptureContainer(QWidget *parent) : QFrame(parent)
 {
+    // QScreen *screen = QApplication::primaryScreen();
+    // int displayWidth = screen->size().width();
+    // int displayHeight = screen->size().height();
+
     mGraphicsView = new QGraphicsView(this);
+    mGraphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mGraphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     mDisplayScene = new QGraphicsScene();
     mGraphicsView->setScene(mDisplayScene);
@@ -14,11 +20,12 @@ CaptureContainer::CaptureContainer()
     mDisplayRender = new QGraphicsVideoItem();
     mDisplayScene->addItem(mDisplayRender);
 
-    QScreenCapture *screenCapture = new QScreenCapture(qApp->primaryScreen());
-    screenCapture->start();
-    QMediaCaptureSession *media = new QMediaCaptureSession();
-    media->setScreenCapture(screenCapture);
-    media->setVideoOutput(mDisplayRender);
+    mDisplayText = new QLabel(mGraphicsView);
+    mDisplayText->setStyleSheet("color: white; background-color: rgba(0, 0, 0, 127); border: 0;");
+
+    if(!(mDisplayText->text() == "")) {
+        mDisplayText->hide();
+    }
 }
 
 void CaptureContainer::setDimens(float width, float height)
@@ -58,9 +65,9 @@ void CaptureContainer::setDisplayLabel(QLabel *displayLabel)
     mDisplayText = displayLabel;
 }
 
-void CaptureContainer::setDisplayText(QString *newText)
+void CaptureContainer::setDisplayText(QString newText)
 {
-    mDisplayText->setText(*newText);
+    mDisplayText->setText(newText);
 }
 
 QGroupBox *CaptureContainer::getPreviewBox()
@@ -83,14 +90,14 @@ void CaptureContainer::setRect(QRectF rect)
     mRect = rect;
 }
 
-QString *CaptureContainer::getPreviewName()
+QString CaptureContainer::getPreviewName()
 {
-    return mPreviewName;
+    return *mPreviewName;
 }
 
-void CaptureContainer::setPreviewName(QString *newPreviewName)
+void CaptureContainer::setPreviewName(QString newPreviewName)
 {
-    mPreviewName = newPreviewName;
+    mPreviewName = &newPreviewName;
     mPreviewBox->setTitle(*mPreviewName);
 }
 
@@ -115,10 +122,7 @@ void CaptureContainer::resizeEvent(QResizeEvent *event)
 void CaptureContainer::showEvent(QShowEvent *event) {
     QFrame::showEvent(event);
     updateCapture();
-    QRectF bounds = rect(); // CANT FOOL ME WITH THIS ONE, Qt!
-    mGraphicsView->fitInView(bounds, Qt::KeepAspectRatio);
 }
-
 
 void CaptureContainer::updateCapture()
 {
@@ -126,21 +130,21 @@ void CaptureContainer::updateCapture()
     int containerWidth = width();
     int containerHeight = height();
 
-    int newLabelWidth = containerWidth;
-    int newLabelHeight = static_cast<int>(containerWidth / aspectRatio);
+    int newContainerWidth = containerWidth;
+    int newContainerHeight = static_cast<int>(containerWidth / aspectRatio);
 
-    if (newLabelHeight > containerHeight) {
-        newLabelHeight = containerHeight;
-        newLabelWidth = static_cast<int>(containerHeight * aspectRatio);
+    if (newContainerHeight > containerHeight) {
+        newContainerHeight = containerHeight;
+        newContainerWidth = static_cast<int>(containerHeight * aspectRatio);
     }
 
     // Scale the display render
-    int labelX = (containerWidth - newLabelWidth) / 2;
-    int labelY = (containerHeight - newLabelHeight) / 2;
+    int containerX = (containerWidth - newContainerWidth) / 2;
+    int containerY = (containerHeight - newContainerHeight) / 2;
 
-    mGraphicsView->setGeometry(labelX, labelY, newLabelWidth, newLabelHeight);
-    QRectF bounds = mDisplayScene->sceneRect();
-    mGraphicsView->fitInView(bounds, Qt::KeepAspectRatio);
+    // Workaround, thanks Gemini
+    mGraphicsView->setGeometry(containerX, containerY, newContainerWidth, newContainerHeight);
+    mDisplayRender->setSize(mGraphicsView->size());
 
     // Adjust the groupBox position and size based on the label size
     // Here we keep the groupBox's position and size relative to the label size
@@ -150,11 +154,15 @@ void CaptureContainer::updateCapture()
     float relativeWidth     = mRect.width() / mWidth;
     float relativeHeight    = mRect.height() / mHeight;
 
-    int groupBoxX = labelX + static_cast<int>(relativeX * newLabelWidth);
-    int groupBoxY = labelY + static_cast<int>(relativeY * newLabelHeight);
-    int groupBoxWidth = static_cast<int>(relativeWidth * newLabelWidth);
-    int groupBoxHeight = static_cast<int>(relativeHeight * newLabelHeight);
+    int groupBoxX = containerX + static_cast<int>(relativeX * newContainerWidth);
+    int groupBoxY = containerY + static_cast<int>(relativeY * newContainerHeight);
+    int groupBoxWidth = static_cast<int>(relativeWidth * newContainerWidth);
+    int groupBoxHeight = static_cast<int>(relativeHeight * newContainerHeight);
 
-    mDisplayText->setGeometry(mGraphicsView->x(), mGraphicsView->y(), mGraphicsView->width(), mGraphicsView->height());
+    mDisplayText->move(
+        mGraphicsView->geometry().width() - mDisplayText->geometry().width(),
+        mGraphicsView->geometry().height() - mDisplayText->geometry().height()
+        );
+
     mPreviewBox->setGeometry(groupBoxX, groupBoxY, groupBoxWidth, groupBoxHeight);
 }

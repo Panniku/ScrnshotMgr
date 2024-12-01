@@ -13,12 +13,14 @@ class SnapInterface : public QMainWindow
     Q_OBJECT
 
 public:
-    SnapInterface(QWidget *parent, PresetType type, QRectF rect);
+    SnapInterface(QWidget *parent, PresetType type, QRectF rect, QPixmap screenshot);
     ~SnapInterface();
 
 
     //
-    void screenshot();
+    QPixmap crop(QPoint start, QPoint end);
+
+    void cropOnly(QPoint start, QPoint end);
 
 
 private:
@@ -30,6 +32,7 @@ private:
 
 signals:
     void onFinishScreenshot(QPixmap &pixmap);
+    void onFinishCrop(QPixmap &pixmap);
     void onCancel();
 
 private slots:

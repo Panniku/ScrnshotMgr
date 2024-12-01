@@ -10,21 +10,19 @@
 #include <QFileDialog>
 #include <QSettings>
 
-class Snapper : public QObject
+class SnapCrop : public QObject
 {
 
     Q_OBJECT
 
 private:
-    QWidget *mParent;
 
     public:
-        void screenshot(QWidget *parent, PresetType type, QRectF dimen);
-        //
-        SnapInterface *si;
+        SnapCrop();
+        void crop(QPixmap &pixmap, QPoint start, QPoint end);
 
-    public slots:
-        void onReceiveFinalImage(QPixmap &pixmap);
+    signals:
+        void onFinishCrop(QPixmap &pixmap);
 };
 
 #endif // SNAPPER_H

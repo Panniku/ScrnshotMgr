@@ -32,7 +32,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 	src/ui_components/presets/presetobject.h src/ui_components/presets/presetobject.cpp
 	src/configmanager/configmanager.h src/configmanager/configmanager.cpp
 	src/logcat/logcat.h src/logcat/logcat.cpp
-	src/snapper/snapper.h src/snapper/snapper.cpp
+	src/snapper/snapcrop.h src/snapper/snapcrop.cpp
 	src/snapper/snapinterface.h src/snapper/snapinterface.cpp
 	src/snapper/snapinterface.ui
 	src/resources.qrc
@@ -40,6 +40,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 	src/ui_components/capture/capturesimple.h src/ui_components/capture/capturesimple.cpp
 	src/ui_components/capture/captureitem.h src/ui_components/capture/captureitem.cpp
 	src/utils/utils.h src/utils/utils.cpp
+	src/configmanager/settingsdialog.h src/configmanager/settingsdialog.cpp src/configmanager/settingsdialog.ui
+	src/ui_components/presets/editor/preseteditor.h src/ui_components/presets/editor/preseteditor.cpp src/ui_components/presets/editor/preseteditor.ui
 
     )
 # Define target properties for Android with Qt 6 as:

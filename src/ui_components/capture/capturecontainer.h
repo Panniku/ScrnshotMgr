@@ -26,7 +26,7 @@ class CaptureContainer : public QFrame
         QPixmap *mCaptureRenderPixmap;
 
     public:
-        CaptureContainer();
+        CaptureContainer(QWidget *parent = nullptr);
         void resizeEvent(QResizeEvent *event);
         void showEvent(QShowEvent *event);
         void updateCapture();
@@ -37,7 +37,7 @@ class CaptureContainer : public QFrame
         QString getDisplayText();
         QGroupBox *getPreviewBox();
         QRectF getRect();
-        QString *getPreviewName();
+        QString getPreviewName();
         QPixmap *getCapturePixmap();
 
         // Set
@@ -45,10 +45,10 @@ class CaptureContainer : public QFrame
         void setDisplayScene(QGraphicsScene *displayScene);
         void setDisplayRender(QGraphicsVideoItem *displayRender);
         void setDisplayLabel(QLabel *displayLabel);
-        void setDisplayText(QString *newText);
+        void setDisplayText(QString newText);
         void setPreviewBox(QGroupBox *newGroupBox);
         void setRect(QRectF rect);
-        void setPreviewName(QString *newPreviewName);
+        void setPreviewName(QString newPreviewName);
         void setCapturePixmap(QPixmap *newCapturePixmap);
 };
 

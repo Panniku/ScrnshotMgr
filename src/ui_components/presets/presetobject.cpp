@@ -16,6 +16,8 @@ PresetObject::PresetObject(QString id, int order, QString regionName, PresetType
     mPresetType = presetType;
     mRect = rect;
 
+    // i have no idea which ai generated this and im too lazy to understand it, sorry :(
+
     std::string x = std::to_string(mRect.x());
     std::string y = std::to_string(mRect.y());
     std::string w = std::to_string(mRect.width());

@@ -6,6 +6,7 @@ class Utils
 {
 public:
     static QPixmap getMaskedRecoloredIconPixmap(QPixmap pixmap, QBrush brush);
+    static QString getSystemTheme();
 };
 
 #endif // UTILS_H

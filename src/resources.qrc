@@ -11,5 +11,7 @@
         <file>icons/ph--trash-light.svg</file>
         <file>icons/ph--arrow-square-out-light.svg</file>
         <file>icons/ph--copy-simple-light.svg</file>
+        <file>icons/ph--video-camera-light.svg</file>
+        <file>icons/ph--camera-light.svg</file>
     </qresource>
 </RCC>
