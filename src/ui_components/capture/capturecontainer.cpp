@@ -142,6 +142,13 @@ void CaptureContainer::updateCapture()
     int containerX = (containerWidth - newContainerWidth) / 2;
     int containerY = (containerHeight - newContainerHeight) / 2;
 
+    // // // Calculate available space for multiple renders
+    // // int renderWidth = newContainerWidth / 2; // Assuming two renders for now
+
+    // // // Position each render within the available space
+    // // mDisplayRender->setPos(0, 0);
+    // // mDisplayRender->setSize(QSizeF(renderWidth, newContainerHeight));
+
     // Workaround, thanks Gemini
     mGraphicsView->setGeometry(containerX, containerY, newContainerWidth, newContainerHeight);
     mDisplayRender->setSize(mGraphicsView->size());

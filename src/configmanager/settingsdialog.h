@@ -15,6 +15,9 @@ public:
     explicit SettingsDialog(QWidget *parent = nullptr);
     ~SettingsDialog();
 
+private slots:
+    void on_themeSelector_currentIndexChanged(int index);
+
 private:
     Ui::SettingsDialog *ui;
 };

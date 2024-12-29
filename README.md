@@ -1,21 +1,25 @@
-> [!NOTE]
-> This is a Work in Progress. Build and use at your own risk for now
+> [!IMPORTANT]
+> This project is not finished yet and is available at a very early stage of testing.
+>
+> I only work on this project when i have time and feel like it. 
 
-## A GUI tool to manage screenshots made in Qt 6.
+# ScrnshotMgr (Screenshot Manager)
+ScrnshotMgr is an open-source gui app made in Qt6 for taking screenshots with ease.
+
+Additionally features minimal video recording (WIP) for taking clips
+
+This project was made because i wanted to replace windows snipping tool and not use sharex lol
+
+![App Preview](./doc/preview.png)
 
 ## Features:
 
 - Screenshot capture list
-- Preset region capturing
-- ... and more! (coming soon..)
+- Preset/Region capture
+- Preview region of capture
 
-## Building
+## Building/Contributing
 
 1. Download Qt Creator <https://www.qt.io/download>
 2. `git clone https://github.com/Panniku/ScrnMgr/`
-3. Open directory in Qt Creator and simply run for now!
-
-## Contributing
-
-feel free to contrib
-
+3. Open directory in Qt Creator and simply run for now (i havent figured out cmake building)

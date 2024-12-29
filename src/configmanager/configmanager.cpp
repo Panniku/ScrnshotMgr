@@ -31,7 +31,7 @@ void ConfigManager::initDefault()
     }
 
     // SnapsDir
-    QString snapsDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + "/ScrnMgr";
+    QString snapsDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + "/" + qApp->applicationName();
     QDir dir(snapsDir);
     if(!dir.exists()) {
         dir.mkpath(".");

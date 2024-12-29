@@ -31,6 +31,15 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     ConfigManager config;
     QSettings *s = config.getSettings();
 
+    QString theme = s->value("Application/Theme").toString();
+    if (theme == "system") {
+        ui->themeSelector->setCurrentIndex(0);
+    } else if (theme == "light") {
+        ui->themeSelector->setCurrentIndex(1);
+    } else if (theme == "dark") {
+        ui->themeSelector->setCurrentIndex(2);
+    }
+
     ui->snapDir->setText(s->value("Application/SnapsDir").toString());
 }
 
@@ -38,3 +47,25 @@ SettingsDialog::~SettingsDialog()
 {
     delete ui;
 }
+
+void SettingsDialog::on_themeSelector_currentIndexChanged(int index)
+{
+    ConfigManager config;
+    QSettings *s = config.getSettings();
+
+    switch(index){
+    case 0:
+        qDebug() << "system";
+        s->setValue("Application/Theme", "system");
+        break;
+    case 1:
+        qDebug() << "light";
+        s->setValue("Application/Theme", "light");
+        break;
+    case 2:
+        qDebug() << "dark";
+        s->setValue("Application/Theme", "dark");
+        break;
+    }
+}
+

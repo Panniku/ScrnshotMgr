@@ -56,8 +56,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         } else if (theme == "dark" || (theme == "system" && Utils::getSystemTheme() == "dark")) {
             qApp->setStyle("fusion");
             QPalette p;
-            // QPalette winColor;
-            // p.setColor(QPalette::Normal, QPalette::Window, p.base().color());
+            p.setColor(QPalette::Normal, QPalette::Window, p.mid().color());
 
             qApp->setPalette(p);
         }
@@ -152,13 +151,29 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     captureContainer->setPreviewBox(capturePreviewBox);
     captureContainer->setRect(captureRect);
-    captureContainer->setDisplayText("Display 1 / " + QString::number(displayWidth) + "x" + QString::number(displayHeight));
+    captureContainer->setDisplayText("Display 0 / " + QString::number(displayWidth) + "x" + QString::number(displayHeight));
 
-    screenCapture = new QScreenCapture(qApp->primaryScreen());
+    auto screens = qApp->screens();
+    QScreen *one = screens[0];
+    // QScreen *two = screens[1];
+
+    screenCapture = new QScreenCapture();
+    // QScreenCapture *kaeya = new QScreenCapture();
+
+    screenCapture->setScreen(one);
     screenCapture->start();
+    // kaeya->setScreen(two);
+    // kaeya->start();
+
+    qDebug() << "again " << screenCapture->screen();
+
     mediaCaptureSession = new QMediaCaptureSession();
+    // QMediaCaptureSession *rosaria = new QMediaCaptureSession();
+
     mediaCaptureSession->setScreenCapture(screenCapture);
+    // rosaria->setScreenCapture(kaeya);
     mediaCaptureSession->setVideoOutput(captureContainer->getDisplayRender());
+    // rosaria->setVideoOutput(captureContainer->balls());
 
     imageCapture = new QImageCapture(screenCapture);
     mediaCaptureSession->setImageCapture(imageCapture);
@@ -237,9 +252,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Misc setup
     presetSearchItem->setClearButtonEnabled(true);
+    // Hiding the "right click to hide this" menu so i can reimplement in the "View" menuaction item instead
+    ui->primaryToolbar->toggleViewAction()->setVisible(false);
+    ui->presetListToolbar->toggleViewAction()->setVisible(false);
+    ui->capturesToolbar->toggleViewAction()->setVisible(false);
+
     setupIcons();
 
-    QLabel *n = new QLabel("ScrnMgr v0 ALPHA :3");
+    QLabel *n = new QLabel("ScrnMgr v0 -- development build");
     ui->statusbar->addWidget(n);
     resize(640, 360);
 
@@ -389,8 +409,8 @@ void MainWindow::onScreenshotFinish(QPixmap &pixmap)
     qDebug() << captureList->children().at(0)->children();
 
     // save function
-    QSettings settings;
-    QString saveDir = settings.value("Application/SnapsDir").toString();
+    // QSettings settings;
+    QString saveDir = settings->value("Application/SnapsDir").toString();
     QString name = "/Snap_";
     QString saveDT = QDateTime::currentDateTime().toString("yyyyMMddhhmmss");
     QString saveFileName = saveDir + name + saveDT;
@@ -410,7 +430,7 @@ void MainWindow::onScreenshotFinish(QPixmap &pixmap)
         }
     } else {
         pixmap.save(saveDir + name + saveDT + ".png");
-        qDebug() << settings.value("Application/SnapsDir");
+        qDebug() << settings->value("Application/SnapsDir");
     }
 }
 
