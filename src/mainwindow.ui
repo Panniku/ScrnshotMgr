@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>701</width>
-    <height>490</height>
+    <width>702</width>
+    <height>452</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -46,7 +46,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>701</width>
+     <width>702</width>
      <height>17</height>
     </rect>
    </property>
@@ -72,11 +72,6 @@
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-  </widget>
   <widget class="QToolBar" name="primaryToolbar">
    <property name="windowTitle">
     <string>Primary Toolbar</string>
@@ -88,33 +83,10 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QToolBar" name="presetListToolbar">
-   <property name="windowTitle">
-    <string>Preset Toolbar</string>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="enabled">
+    <bool>true</bool>
    </property>
-   <property name="allowedAreas">
-    <set>Qt::LeftToolBarArea|Qt::RightToolBarArea</set>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>LeftToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QToolBar" name="capturesToolbar">
-   <property name="windowTitle">
-    <string>Capture Toolbar</string>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::LeftToolBarArea|Qt::RightToolBarArea</set>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>RightToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <action name="actionNew_Snap">
    <property name="text">

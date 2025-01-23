@@ -13,6 +13,7 @@
 #include <QVideoWidget>
 #include <QPushButton>
 #include <QMediaCaptureSession>
+#include <QToolButton>
 
 #include "qimagecapture.h"
 #include "qscreencapture.h"
@@ -42,17 +43,24 @@ class MainWindow : public QMainWindow
         QMediaCaptureSession *mediaCaptureSession;
 
         // Toolbar stuff
-        QPushButton *snapButton, *recordButton;
+        QToolButton *snapButton, *recordButton;
+        QAction *snapAction, *recordAction;
         QComboBox *presetsComboBox;
-        QPushButton *toggleVisibility, *toggleOnTop;
+        QToolButton *toggleVisibility, *toggleOnTop;
+        QAction *visibilityAction, *onTopAction;
 
         // Preset list stuff
-        QFrame *presetRoot;
+        QDockWidget *presetDock;
         QLineEdit *presetSearchItem;
         QPushButton *presetAddItem;
         QListWidget *presetListWidget;
 
+        // Preview Toolbar
+        QFrame *previewRoot;
+        QToolBar *previewToolbar;
+
         // Preview
+        QDockWidget *captureRoot;
         CaptureContainer *captureContainer;
         QHBoxLayout *tempBox;
         QVideoWidget *displayRender;

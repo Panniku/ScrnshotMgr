@@ -8,7 +8,7 @@ ScrnshotMgr is an open-source gui app made in Qt6 for taking screenshots with ea
 
 Additionally features minimal video recording (WIP) for taking clips
 
-This project was made because i wanted to replace windows snipping tool and not use sharex lol
+This is a hobby project because i wanted to replace windows snipping tool and not use sharex, as well as learn Qt and C++.
 
 ![App Preview](./doc/preview.png)
 
@@ -20,6 +20,21 @@ This project was made because i wanted to replace windows snipping tool and not 
 
 ## Building/Contributing
 
-1. Download Qt Creator <https://www.qt.io/download>
-2. `git clone https://github.com/Panniku/ScrnMgr/`
-3. Open directory in Qt Creator and simply run for now (i havent figured out cmake building)
+### Windows
+
+- Install Qt 6.8.1 and windeployqt using maintenancetool.exe
+- Add windeployqt to PATH
+- `git clone https://github.com/Panniku/Scrnshotmgr`
+- Run the application via QtCreator at least once
+- `windeploy [PATH TO PROJECT]/build/[BUILD DIRECTORY WITH EXECUTABLE]`
+
+### Linux
+
+- Install `qt6`, `cmake` and `make` using your distribution's package manager
+- `git clone https://github.com/Panniku/Scrnshotmgr`
+- `cd [PATH TO PROJECT] && mkdir build && cd /build && cmake .. && make`
+- run the executable (differs on dists? fix later)
+
+### MacOS
+
+run the project through qtcreator i guess

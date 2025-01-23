@@ -52,13 +52,13 @@ SnapInterface::SnapInterface(QWidget *parent, PresetType type, QRectF rect, QPix
         // setWindowFlags(Qt::FramelessWindowHint);
 
         // Controls setup?
-        QPixmap screenshotIcon = QPixmap(":/res/icons/ph--camera-light.svg");
+        QPixmap screenshotIcon = QPixmap(":/res/icons/camera-photo-symbolic.svg");
         ui->radioScreenshot->setIcon(QIcon(Utils::getMaskedRecoloredIconPixmap(screenshotIcon, b)));
 
-        QPixmap recordIcon = QPixmap(":/res/icons/ph--video-camera-light.svg");
+        QPixmap recordIcon = QPixmap(":/res/icons/camera-video-symbolic.svg");
         ui->radioRecord->setIcon(QIcon(Utils::getMaskedRecoloredIconPixmap(recordIcon, b)));
 
-        QPixmap closeIcon = QPixmap(":/res/icons/ph--x-light.svg");
+        QPixmap closeIcon = QPixmap(":/res/icons/tab-close-symbolic.svg");
         ui->closeWindow->setIcon(QIcon(Utils::getMaskedRecoloredIconPixmap(closeIcon, b)));
 
         //TODO

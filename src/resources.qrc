@@ -1,16 +1,16 @@
 <RCC>
     <qresource prefix="/res">
-        <file>icons/ph--eye-light.svg</file>
-        <file>icons/ph--eye-slash-light.svg</file>
-        <file>icons/ph--push-pin-light.svg</file>
-        <file>icons/ph--push-pin-slash-light.svg</file>
-        <file>icons/ph--plus.svg</file>
-        <file>icons/ph--magnifying-glass.svg</file>
-        <file>icons/ph--x-light.svg</file>
-        <file>icons/ph--trash-light.svg</file>
-        <file>icons/ph--arrow-square-out-light.svg</file>
-        <file>icons/ph--copy-simple-light.svg</file>
-        <file>icons/ph--video-camera-light.svg</file>
-        <file>icons/ph--camera-light.svg</file>
+        <file>icons/bqm-add-symbolic.svg</file>
+        <file>icons/camera-photo-symbolic.svg</file>
+        <file>icons/camera-video-symbolic.svg</file>
+	<file>icons/edit-copy-symbolic.svg</file>
+	<file>icons/gnumeric-column-hide-symbolic.svg</file>
+	<file>icons/gnumeric-column-unhide-symbolic.svg</file>
+	<file>icons/open-link-symbolic.svg</file>
+	<file>icons/search-symbolic.svg</file>
+	<file>icons/tab-close-symbolic.svg</file>
+	<file>icons/trash-empty-symbolic.svg</file>
+	<file>icons/window-pin-symbolic.svg</file>
+	<file>icons/window-unpin-symbolic.svg</file>
     </qresource>
 </RCC>

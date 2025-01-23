@@ -34,9 +34,9 @@ CaptureItem::CaptureItem(QPixmap image, QString text)
     QPalette p;
     QBrush b = p.brush(QPalette::Text);
 
-    QPixmap copyPixmap = QPixmap(":/res/icons/ph--copy-simple-light.svg");
-    QPixmap showPixmap = QPixmap(":/res/icons/ph--arrow-square-out-light.svg");
-    QPixmap deletePixmap = QPixmap(":/res/icons/ph--trash-light.svg");
+    QPixmap copyPixmap = QPixmap(":/res/icons/edit-copy-symbolic.svg");
+    QPixmap showPixmap = QPixmap(":/res/icons/open-link-symbolic.svg").scaled(256, 256);
+    QPixmap deletePixmap = QPixmap(":/res/icons/trash-empty-symbolic.svg").scaled(22, 22);
 
     copyButton->setIcon(Utils::getMaskedRecoloredIconPixmap(copyPixmap, b));
     showButton->setIcon(Utils::getMaskedRecoloredIconPixmap(showPixmap, b));

@@ -8,6 +8,7 @@
 #include <QScreenCapture>
 #include <QImageCapture>
 #include <QMediaCaptureSession>
+#include <QMessageBox>
 #include "configmanager/settingsdialog.h"
 #include "qclipboard.h"
 #include "qlineedit.h"
@@ -52,11 +53,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // windows only for now :3
     #if defined(Q_OS_WIN32)
         if (theme == "light" || (theme == "system" && Utils::getSystemTheme() == "light")) {
-            //
+            qApp->setStyle("windowsvista"); // Qt 6.7+ change
         } else if (theme == "dark" || (theme == "system" && Utils::getSystemTheme() == "dark")) {
             qApp->setStyle("fusion");
             QPalette p;
             p.setColor(QPalette::Normal, QPalette::Window, p.mid().color());
+            p.setColor(QPalette::Inactive, QPalette::Window, p.mid().color());
 
             qApp->setPalette(p);
         }
@@ -67,16 +69,34 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     displayWidth = screen->size().width();
     displayHeight = screen->size().height();
 
-    /******************************************************************************
-     * Toolbar init
-     */
-    snapButton = new QPushButton("Snap");
-    snapButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    connect(snapButton, &QPushButton::clicked, this, &MainWindow::snapButton_click);
+    QPalette p;
+    QBrush b = p.brush(QPalette::Text);
 
-    recordButton = new QPushButton("Record");
-    recordButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    connect(recordButton, &QPushButton::clicked, this, &MainWindow::recordButton_click);
+    /******************************************************************************
+     * Primary Toolbar init
+     */
+
+    // ui->primaryToolbar->setIconSize(QSize(22, 22));
+
+    snapButton = new QToolButton();
+    // snapButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    snapButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    snapAction = new QAction();
+    QPixmap cameraPixmap = QPixmap(":/res/icons/camera-photo-symbolic.svg");
+    snapAction->setIcon(QIcon(Utils::getMaskedRecoloredIconPixmap(cameraPixmap, b)));
+    snapAction->setText("Snap");
+    snapButton->setDefaultAction(snapAction);
+    connect(snapButton, &QToolButton::clicked, this, &MainWindow::snapButton_click);
+
+    recordButton = new QToolButton();
+    // recordButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    recordButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    recordAction = new QAction();
+    QPixmap recordPixmap = QPixmap(":/res/icons/camera-video-symbolic.svg");
+    recordAction->setIcon(QIcon(Utils::getMaskedRecoloredIconPixmap(recordPixmap, b)));
+    recordAction->setText("Record");
+    recordButton->setDefaultAction(recordAction);
+    connect(recordButton, &QToolButton::clicked, this, &MainWindow::recordButton_click);
 
     presetsComboBox = new QComboBox();
     presetsComboBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -85,17 +105,45 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     QWidget *primarySpacer = new QWidget();
     primarySpacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    toggleVisibility = new QPushButton();
-    toggleVisibility->setCheckable(true);
-    toggleVisibility->setFlat(true);
-    toggleVisibility->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    connect(toggleVisibility, &QPushButton::toggled, this, &MainWindow::toggleVisibility_toggled);
+    toggleVisibility = new QToolButton();
+    visibilityAction = new QAction();
+    visibilityAction->setCheckable(true);
+    QPixmap visibilityPixmap = QPixmap(":/res/icons/gnumeric-column-hide-symbolic.svg");
+    QPixmap visibilityPixmapOn = QPixmap(":/res/icons/gnumeric-column-unhide-symbolic.svg");
+    QIcon visibilityIcon;
+    visibilityIcon.addPixmap(
+        Utils::getMaskedRecoloredIconPixmap(visibilityPixmap, b),
+        QIcon::Normal,
+        QIcon::Off
+        );
+    visibilityIcon.addPixmap(
+        Utils::getMaskedRecoloredIconPixmap(visibilityPixmapOn, b),
+        QIcon::Normal,
+        QIcon::On
+        );
+    visibilityAction->setIcon(visibilityIcon);
+    toggleVisibility->setDefaultAction(visibilityAction);
+    connect(toggleVisibility, &QToolButton::toggled, this, &MainWindow::toggleVisibility_toggled);
 
-    toggleOnTop = new QPushButton();
-    toggleOnTop->setCheckable(true);
-    toggleOnTop->setFlat(true);
-    toggleOnTop->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    connect(toggleOnTop, &QPushButton::toggled, this, &MainWindow::toggleOnTop_toggled);
+    toggleOnTop = new QToolButton();
+    onTopAction = new QAction();
+    onTopAction->setCheckable(true);
+    QPixmap topPixmap = QPixmap(":/res/icons/window-unpin-symbolic.svg");
+    QPixmap topPixmapOn = QPixmap(":/res/icons/window-pin-symbolic.svg");
+    QIcon topIcon;
+    topIcon.addPixmap(
+        Utils::getMaskedRecoloredIconPixmap(topPixmap, b),
+        QIcon::Normal,
+        QIcon::Off
+        );
+    topIcon.addPixmap(
+        Utils::getMaskedRecoloredIconPixmap(topPixmapOn, b),
+        QIcon::Normal,
+        QIcon::On
+        );
+    onTopAction->setIcon(topIcon);
+    toggleOnTop->setDefaultAction(onTopAction);
+    connect(toggleOnTop, &QToolButton::toggled, this, &MainWindow::toggleOnTop_toggled);
 
     ui->primaryToolbar->addWidget(snapButton);
     ui->primaryToolbar->addWidget(recordButton);
@@ -110,11 +158,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
      * Preview list init
      */
 
-    presetRoot = new QFrame();
-    QVBoxLayout *presetLayout = new QVBoxLayout(presetRoot);
+    presetDock = new QDockWidget("Presets");
+    presetDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    presetDock->setFeatures(QDockWidget::DockWidgetFloatable);
+    presetDock->setFeatures(QDockWidget::DockWidgetMovable);
+
+    QFrame *presetFrame = new QFrame();
+    QVBoxLayout *presetLayout = new QVBoxLayout();
     presetLayout->setContentsMargins(QMargins(0, 0, 0, 0));
     presetLayout->setSpacing(0);
-    ui->presetListToolbar->addWidget(presetRoot);
+    presetFrame->setLayout(presetLayout);
+
+    presetDock->setWidget(presetFrame);
+    // centralSplitter->addWidget(presetDock);
 
     QHBoxLayout *presetWidgets = new QHBoxLayout();
     presetWidgets->setContentsMargins(QMargins(0, 0, 0, 0));
@@ -134,7 +190,37 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     presetListWidget = new QListWidget();
     presetLayout->addWidget(presetListWidget);
 
-    ui->presetListToolbar->setFixedWidth(160);
+    addDockWidget(Qt::LeftDockWidgetArea, presetDock);
+    qDebug() << presetDock->geometry();
+
+    /******************************************************************************/
+
+    /******************************************************************************
+     * Capture preview toolbar init
+     */
+
+    previewRoot = new QFrame();
+    ui->centralwidget->layout()->addWidget(previewRoot);
+    QVBoxLayout *_previewRootLayout = new QVBoxLayout();
+    _previewRootLayout->setContentsMargins(QMargins(0, 0, 0, 0));
+    _previewRootLayout->setSpacing(0);
+    previewRoot->setLayout(_previewRootLayout);
+
+    QHBoxLayout *previewToolbarLayout = new QHBoxLayout();
+    previewToolbarLayout->setContentsMargins(QMargins(0, 0, 0, 0));
+    previewToolbarLayout->setAlignment(Qt::AlignLeft);
+    previewToolbarLayout->setDirection(QHBoxLayout::LeftToRight);
+
+    previewToolbar = new QToolBar();
+    // previewToolbar->setLayout(previewToolbarLayout);
+    previewToolbar->setOrientation(Qt::Horizontal);
+    // ui->centralwidget->layout()->addWidget(previewToolbar);
+    previewRoot->layout()->addWidget(previewToolbar);
+
+    QComboBox *_box = new QComboBox();
+    _box->addItem("Display 1");
+    _box->addItem("Display 2");
+    previewToolbar->addWidget(_box);
 
     /******************************************************************************/
 
@@ -144,7 +230,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     captureContainer = new CaptureContainer();
     captureContainer->setDimens(displayWidth, displayHeight);
-    ui->centralwidget->layout()->addWidget(captureContainer);
+    // ui->centralwidget->layout()->addWidget(captureContainer);
+    // centralSplitter->addWidget(captureContainer);
+    previewRoot->layout()->addWidget(captureContainer);
 
     capturePreviewBox = new QGroupBox(captureContainer);
     capturePreviewBox->setStyleSheet("border: 2px solid red;");
@@ -158,22 +246,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // QScreen *two = screens[1];
 
     screenCapture = new QScreenCapture();
-    // QScreenCapture *kaeya = new QScreenCapture();
-
     screenCapture->setScreen(one);
     screenCapture->start();
-    // kaeya->setScreen(two);
-    // kaeya->start();
 
     qDebug() << "again " << screenCapture->screen();
 
     mediaCaptureSession = new QMediaCaptureSession();
-    // QMediaCaptureSession *rosaria = new QMediaCaptureSession();
-
     mediaCaptureSession->setScreenCapture(screenCapture);
-    // rosaria->setScreenCapture(kaeya);
     mediaCaptureSession->setVideoOutput(captureContainer->getDisplayRender());
-    // rosaria->setVideoOutput(captureContainer->balls());
 
     imageCapture = new QImageCapture(screenCapture);
     mediaCaptureSession->setImageCapture(imageCapture);
@@ -186,9 +266,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
      * Capture list init
      */
 
+    captureRoot = new QDockWidget("Captures");
+    captureRoot->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    captureRoot->setFeatures(QDockWidget::DockWidgetFloatable);
+    captureRoot->setFeatures(QDockWidget::DockWidgetMovable);
+
+    QFrame *captureFrame = new QFrame();
+    QVBoxLayout *captureFrameLayout = new QVBoxLayout();
+    captureFrameLayout->setContentsMargins(QMargins(0, 0, 0, 0));
+    captureFrameLayout->setSpacing(0);
+    captureFrame->setLayout(captureFrameLayout);
+
+    captureRoot->setWidget(captureFrame);
+    // centralSplitter->addWidget(captureRoot);
+
     capturesSplitter = new QSplitter();
     capturesSplitter->setOrientation(Qt::Vertical);
-    ui->capturesToolbar->addWidget(capturesSplitter);
+    captureFrame->layout()->addWidget(capturesSplitter);
 
     lastCapturePreview = new CaptureSimple();
     lastCapturePreview->setStyleSheet("border: 1px solid gray;");
@@ -201,7 +295,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     QImage image(QSize(screen->size().width(), screen->size().height()),QImage::Format_RGB32);
     QPainter painter(&image);
-    QPalette p;
     painter.fillRect(QRectF(0,0,screen->size().width(), screen->size().height()), p.brush(QPalette::Base));
     QPixmap lsp = QPixmap::fromImage(image);
     lastPreview->setPixmap(lsp);
@@ -215,7 +308,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     captureList = new QListWidget(capturesSplitter);
     capturesSplitter->addWidget(captureList);
 
-    ui->capturesToolbar->setFixedWidth(160);
+    addDockWidget(Qt::RightDockWidgetArea, captureRoot);
+    // TODO
 
     /******************************************************************************/
 
@@ -254,16 +348,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     presetSearchItem->setClearButtonEnabled(true);
     // Hiding the "right click to hide this" menu so i can reimplement in the "View" menuaction item instead
     ui->primaryToolbar->toggleViewAction()->setVisible(false);
-    ui->presetListToolbar->toggleViewAction()->setVisible(false);
-    ui->capturesToolbar->toggleViewAction()->setVisible(false);
+    // ui->presetListToolbar->toggleViewAction()->setVisible(false);
+    // ui->capturesToolbar->toggleViewAction()->setVisible(false);
 
     setupIcons();
+    presetDock->setGeometry(presetDock->geometry().x(), presetDock->geometry().y(), 50, presetDock->geometry().height());
+    captureRoot->setGeometry(captureRoot->geometry().x(), captureRoot->geometry().y(), 50, captureRoot->geometry().height());
 
-    QLabel *n = new QLabel("ScrnMgr v0 -- development build");
+    QLabel *n = new QLabel("ScrnMgr v0.1 -- development build");
     ui->statusbar->addWidget(n);
     resize(640, 360);
 
     qDebug() << Utils::getSystemTheme();
+    qDebug() << presetAddItem->icon();
 }
 
 MainWindow::~MainWindow()
@@ -295,45 +392,14 @@ void MainWindow::setupIcons()
 {
     QPalette p;
     QBrush b = p.brush(QPalette::Text);
+
     // Misc search icon
-    QPixmap searchPixmap = QPixmap(":/res/icons/ph--magnifying-glass.svg");
+    QPixmap searchPixmap = QPixmap(":/res/icons/search-symbolic.svg");
     presetSearchItem->addAction(QIcon(Utils::getMaskedRecoloredIconPixmap(searchPixmap, b)), QLineEdit::LeadingPosition);
 
     // Add icon
-    QPixmap addPixmap = QPixmap(":/res/icons/ph--plus.svg");
+    QPixmap addPixmap = QPixmap(":/res/icons/bqm-add-symbolic.svg");
     presetAddItem->setIcon(QIcon(Utils::getMaskedRecoloredIconPixmap(addPixmap, b)));
-
-    // Visibility icon
-    QPixmap visibilityPixmap = QPixmap(":/res/icons/ph--eye-slash-light.svg");
-    QPixmap visibilityPixmapOn = QPixmap(":/res/icons/ph--eye-light.svg");
-    QIcon visibilityIcon;
-    visibilityIcon.addPixmap(
-        Utils::getMaskedRecoloredIconPixmap(visibilityPixmap, b),
-        QIcon::Normal,
-        QIcon::Off
-        );
-    visibilityIcon.addPixmap(
-        Utils::getMaskedRecoloredIconPixmap(visibilityPixmapOn, b),
-        QIcon::Normal,
-        QIcon::On
-        );
-    toggleVisibility->setIcon(visibilityIcon);
-
-    // AlwaysOnTop icon
-    QPixmap topPixmap = QPixmap(":/res/icons/ph--push-pin-slash-light.svg");
-    QPixmap topPixmapOn = QPixmap(":/res/icons/ph--push-pin-light.svg");
-    QIcon topIcon;
-    topIcon.addPixmap(
-        Utils::getMaskedRecoloredIconPixmap(topPixmap, b),
-        QIcon::Normal,
-        QIcon::Off
-        );
-    topIcon.addPixmap(
-        Utils::getMaskedRecoloredIconPixmap(topPixmapOn, b),
-        QIcon::Normal,
-        QIcon::On
-        );
-    toggleOnTop->setIcon(topIcon);
 }
 
 void MainWindow::addPreset() {
@@ -360,6 +426,10 @@ void MainWindow::snapButton_click()
 void MainWindow::recordButton_click()
 {
     // meowmeowmeowmeowmeowmeowmeowmeow
+    QMessageBox msgBox;
+    msgBox.setText("Record function is not finished yet.");
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.exec();
 }
 
 void MainWindow::imageCaptured(int id, QImage image)
