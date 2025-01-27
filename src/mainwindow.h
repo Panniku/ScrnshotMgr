@@ -14,6 +14,7 @@
 #include <QPushButton>
 #include <QMediaCaptureSession>
 #include <QToolButton>
+#include <QCapturableWindow>
 
 #include "qimagecapture.h"
 #include "qscreencapture.h"
@@ -32,6 +33,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
     private:
+        QList<QCapturableWindow> captureWindows;
+        //
         QSettings *settings;
         QPixmap capture;
         float displayWidth, displayHeight;
@@ -39,6 +42,7 @@ class MainWindow : public QMainWindow
 
         //
         QScreenCapture *screenCapture;
+        QWindowCapture *windowCapture;
         QImageCapture *imageCapture;
         QMediaCaptureSession *mediaCaptureSession;
 
@@ -58,6 +62,8 @@ class MainWindow : public QMainWindow
         // Preview Toolbar
         QFrame *previewRoot;
         QToolBar *previewToolbar;
+        QComboBox *displayBox, *windowBox;
+        QPushButton *refreshWindows;
 
         // Preview
         QDockWidget *captureRoot;
@@ -85,6 +91,7 @@ class MainWindow : public QMainWindow
         ~MainWindow();
 
         // Events
+        void showEvent(QShowEvent *event);
         void hideEvent(QHideEvent *event);
         void resizeEvent(QResizeEvent *event);
         void closeEvent(QCloseEvent *event);
@@ -92,7 +99,7 @@ class MainWindow : public QMainWindow
         // Functions
         void setupUi();
         void setupIcons();
-
+        void grabWindows();
 
     private slots:
 
@@ -107,6 +114,8 @@ class MainWindow : public QMainWindow
         void toggleOnTop_toggled(bool checked);
 
         //
+        void windowSelected(int i);
+        void reloadWindows();
         void imageCaptured(int id, QImage image);
 
         //

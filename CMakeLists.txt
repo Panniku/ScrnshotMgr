@@ -13,19 +13,21 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS MultimediaWidgets)
 
-
 set(PROJECT_SOURCES
         src/main.cpp
 	src/mainwindow.cpp
 	src/mainwindow.h
 	src/mainwindow.ui
-
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    if(WIN32)
+	set(APP_ICON_RESOURCE_WIN "${CMAKE_CURRENT_SOURCE_DIR}/scrnshotmgr.rc")
+    endif()
     qt_add_executable(ScrnshotMgr
 	MANUAL_FINALIZATION
 	${PROJECT_SOURCES}
+	${APP_ICON_RESOURCE_WIN}
 	src/ui_components/capture/capturecontainer.h src/ui_components/capture/capturecontainer.cpp
 	src/ui_components/capture/capturerenderer.h src/ui_components/capture/capturerenderer.cpp
 	src/ui_components/logtextedit.h src/ui_components/logtextedit.cpp

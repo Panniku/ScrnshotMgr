@@ -9,6 +9,7 @@
 #include <QImageCapture>
 #include <QMediaCaptureSession>
 #include <QMessageBox>
+#include <QWindowCapture>
 #include "configmanager/settingsdialog.h"
 #include "qclipboard.h"
 #include "qlineedit.h"
@@ -28,13 +29,11 @@
 #include "utils/utils.h"
 #include "configmanager/settingsdialog.h"
 #include <QStyleHints>
-
-QPixmap *mCaptureRender;
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
 
     // CONFIGMANAGER
     ConfigManager configManager;
@@ -45,13 +44,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     Logcat::log(LogType::Warning, "NOTICE", "If colors are bugged, this may be due to how we initialize colors. Sorry for the inconvenience!");
     logcat->log(LogType::Info, "―――――――――――――――――――――――――――――――――――――――――――――", "");
 
-    // :3
+    // SETTINGS
     settings = configManager.getSettings();
-
     QString theme = settings->value("Application/Theme").toString();
 
     // windows only for now :3
-    #if defined(Q_OS_WIN32)
+    #if defined(Q_OS_WIN)
         if (theme == "light" || (theme == "system" && Utils::getSystemTheme() == "light")) {
             qApp->setStyle("windowsvista"); // Qt 6.7+ change
         } else if (theme == "dark" || (theme == "system" && Utils::getSystemTheme() == "dark")) {
@@ -206,21 +204,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     _previewRootLayout->setSpacing(0);
     previewRoot->setLayout(_previewRootLayout);
 
-    QHBoxLayout *previewToolbarLayout = new QHBoxLayout();
-    previewToolbarLayout->setContentsMargins(QMargins(0, 0, 0, 0));
-    previewToolbarLayout->setAlignment(Qt::AlignLeft);
-    previewToolbarLayout->setDirection(QHBoxLayout::LeftToRight);
-
     previewToolbar = new QToolBar();
-    // previewToolbar->setLayout(previewToolbarLayout);
     previewToolbar->setOrientation(Qt::Horizontal);
-    // ui->centralwidget->layout()->addWidget(previewToolbar);
     previewRoot->layout()->addWidget(previewToolbar);
 
-    QComboBox *_box = new QComboBox();
-    _box->addItem("Display 1");
-    _box->addItem("Display 2");
-    previewToolbar->addWidget(_box);
+    displayBox = new QComboBox();
+    displayBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    displayBox->addItem("Not functional!");
+    displayBox->addItem("Not functional!");
+
+    windowBox = new QComboBox();
+    connect(windowBox, &QComboBox::currentIndexChanged, this, &MainWindow::windowSelected);
+
+    refreshWindows = new QPushButton("Reload");
+    connect(refreshWindows, &QPushButton::pressed, this, &MainWindow::reloadWindows);
+
+    previewToolbar->addWidget(displayBox);
+    previewToolbar->addWidget(windowBox);
+    previewToolbar->addWidget(refreshWindows);
 
     /******************************************************************************/
 
@@ -246,13 +247,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // QScreen *two = screens[1];
 
     screenCapture = new QScreenCapture();
-    screenCapture->setScreen(one);
-    screenCapture->start();
+    // screenCapture->setScreen(one);
+    // screenCapture->start();
+
+    windowCapture = new QWindowCapture();
+    windowCapture->setWindow(QWindowCapture::capturableWindows()[0]);
+    windowCapture->start();
+    connect(windowCapture, &QWindowCapture::errorOccurred, [this](QWindowCapture::Error error, const QString &errorString) {
+        qDebug() << "Error: " << error << " str: " << errorString;
+    });
 
     qDebug() << "again " << screenCapture->screen();
 
     mediaCaptureSession = new QMediaCaptureSession();
-    mediaCaptureSession->setScreenCapture(screenCapture);
+    // mediaCaptureSession->setScreenCapture(screenCapture);
+    mediaCaptureSession->setWindowCapture(windowCapture);
     mediaCaptureSession->setVideoOutput(captureContainer->getDisplayRender());
 
     imageCapture = new QImageCapture(screenCapture);
@@ -352,20 +361,29 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // ui->capturesToolbar->toggleViewAction()->setVisible(false);
 
     setupIcons();
+    grabWindows();
     presetDock->setGeometry(presetDock->geometry().x(), presetDock->geometry().y(), 50, presetDock->geometry().height());
     captureRoot->setGeometry(captureRoot->geometry().x(), captureRoot->geometry().y(), 50, captureRoot->geometry().height());
 
+    qDebug() << presetDock->geometry() << " " << captureRoot->geometry();
     QLabel *n = new QLabel("ScrnMgr v0.1 -- development build");
     ui->statusbar->addWidget(n);
     resize(640, 360);
 
     qDebug() << Utils::getSystemTheme();
     qDebug() << presetAddItem->icon();
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+    // grabWindows();
 }
 
 void MainWindow::hideEvent(QHideEvent *event)
@@ -402,6 +420,20 @@ void MainWindow::setupIcons()
     presetAddItem->setIcon(QIcon(Utils::getMaskedRecoloredIconPixmap(addPixmap, b)));
 }
 
+void MainWindow::grabWindows() {
+    // This. function. was hidden from EVERY SITE
+    // and took me HOURS TO FIND.
+    // AFTER I WRITE AN ENTIRE WINDOWS SPECIFIC
+    // SNIPPET TO GRAB WINDOW HANDLES
+    // I NEED A BREAK.
+    if(!captureWindows.empty()) captureWindows.clear();
+    windowBox->clear();
+    captureWindows = QWindowCapture::capturableWindows();
+    for(QCapturableWindow &window: captureWindows){
+        windowBox->addItem(window.description());
+    }
+}
+
 void MainWindow::addPreset() {
     PresetEditor *editor = new PresetEditor();
     editor->exec();
@@ -430,6 +462,19 @@ void MainWindow::recordButton_click()
     msgBox.setText("Record function is not finished yet.");
     msgBox.setIcon(QMessageBox::Information);
     msgBox.exec();
+}
+
+void MainWindow::windowSelected(int i)
+{
+    if(!captureWindows.empty()) {
+        qDebug() << windowCapture->errorString();
+        windowCapture->setWindow(captureWindows.at(i));
+    }
+}
+
+void MainWindow::reloadWindows()
+{
+    grabWindows();
 }
 
 void MainWindow::imageCaptured(int id, QImage image)

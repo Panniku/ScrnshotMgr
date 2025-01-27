@@ -3,14 +3,15 @@
         <file>icons/bqm-add-symbolic.svg</file>
         <file>icons/camera-photo-symbolic.svg</file>
         <file>icons/camera-video-symbolic.svg</file>
-	<file>icons/edit-copy-symbolic.svg</file>
-	<file>icons/gnumeric-column-hide-symbolic.svg</file>
-	<file>icons/gnumeric-column-unhide-symbolic.svg</file>
-	<file>icons/open-link-symbolic.svg</file>
-	<file>icons/search-symbolic.svg</file>
-	<file>icons/tab-close-symbolic.svg</file>
-	<file>icons/trash-empty-symbolic.svg</file>
-	<file>icons/window-pin-symbolic.svg</file>
-	<file>icons/window-unpin-symbolic.svg</file>
+        <file>icons/edit-copy-symbolic.svg</file>
+        <file>icons/gnumeric-column-hide-symbolic.svg</file>
+        <file>icons/gnumeric-column-unhide-symbolic.svg</file>
+        <file>icons/open-link-symbolic.svg</file>
+        <file>icons/search-symbolic.svg</file>
+        <file>icons/tab-close-symbolic.svg</file>
+        <file>icons/trash-empty-symbolic.svg</file>
+        <file>icons/window-pin-symbolic.svg</file>
+        <file>icons/window-unpin-symbolic.svg</file>
+        <file>icons/scrnshotmgr.ico</file>
     </qresource>
 </RCC>

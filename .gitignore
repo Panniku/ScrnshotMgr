@@ -75,3 +75,4 @@ CMakeLists.txt.user*
 # i dont know how qtcreator doesnt support this
 !src/
 build/
+!scrnshotmgr.rc

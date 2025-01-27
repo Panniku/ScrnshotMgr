@@ -24,7 +24,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     // This option is just there for windows because microsoft is too lazy to update their msstyles to have light/dark
     // However, on UNIX the themes match system, so no need for this
     ui->themeFrame->setDisabled(true);
-    #if defined(Q_OS_WIN32)
+    #if defined(Q_OS_WIN)
         ui->themeFrame->setDisabled(false);
     #endif
 
